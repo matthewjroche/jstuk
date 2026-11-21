@@ -15,6 +15,38 @@ the numbers mean and when they change.
 
 ---
 
+## 0.23.0 — 2026-11-21 — UK searching
+
+First release of the UK fork. See [docs/uk-fork.md](docs/uk-fork.md).
+
+**Changed**
+
+- Adzuna now searches its UK site by default instead of the US one, and salaries
+  it reports read in pounds (£45k–£60k/yr) rather than dollars.
+- Adzuna is searched by the town in your first on-site location ("Harrogate"),
+  not the whole saved address ("Harrogate, North Yorkshire, England, United
+  Kingdom"), which it could not place. A country-level entry such as United
+  Kingdom runs the nationwide search instead.
+- Dice is no longer part of a scan: it is a US board and returned little for UK
+  searches. Set `JST_ENABLE_DICE=1` to bring it back.
+- The browser-scan instructions for Indeed, Glassdoor and Monster now start on
+  their UK sites, and Reed, Totaljobs, CV-Library, Find a job, NHS Jobs, Civil
+  Service Jobs, jobs.ac.uk and Technojobs listings are recognised as boards.
+- Location placeholders and hints use UK examples; the salary web search and
+  Brave search default to the UK.
+
+**Fixed**
+
+- The location picker now offers small UK towns. It used to show the surrounding
+  borough instead (typing Hebden Bridge offered Calderdale), and filled the list
+  with streets and shops that shared the name.
+- Saved UK locations name the county ("Pateley Bridge, North Yorkshire") rather
+  than just "England", so they match the county a job board prints and no longer
+  match every English job. Locations you saved before this release keep their old
+  wording; re-pick them to get the new form.
+
+---
+
 ## 0.22.0 — 2026-11-17 — Say it once, save it for next time
 
 **Added**

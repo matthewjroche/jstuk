@@ -59,11 +59,14 @@ export async function runJobDiscoveryScan(input: {
     status: "pending",
     detail: "Waiting to scan enabled Greenhouse, Ashby, and Lever sources",
   });
+  // Dice is a US/Canada board, so this fork leaves it out of every scan. Set
+  // JST_ENABLE_DICE=1 to bring it back.
+  const diceEnabled = process.env.JST_ENABLE_DICE === "1";
   reportProgress({
     sourceId: "dice",
     sourceLabel: "Dice",
-    status: "pending",
-    detail: "Waiting to search Dice",
+    status: diceEnabled ? "pending" : "skipped",
+    detail: diceEnabled ? "Waiting to search Dice" : "US-only board, switched off in this fork",
   });
   reportProgress({
     sourceId: "himalayas",
@@ -117,20 +120,22 @@ export async function runJobDiscoveryScan(input: {
           },
         )
       : null,
-    runSource(
-      "dice",
-      "Dice",
-      "Searching saved roles and locations on Dice",
-      () =>
-        runDiceScan({
-          titles: profile.targetRoles,
-          locations: profile.preferredLocations,
-          remotePreference: profile.remotePreference,
-          titleFilters,
-          freshnessWindowHours,
-        }),
-      (result) => `Checked Dice — ${result.totalFound} ${result.totalFound === 1 ? "listing" : "listings"} found`,
-    ),
+    diceEnabled
+      ? runSource(
+          "dice",
+          "Dice",
+          "Searching saved roles and locations on Dice",
+          () =>
+            runDiceScan({
+              titles: profile.targetRoles,
+              locations: profile.preferredLocations,
+              remotePreference: profile.remotePreference,
+              titleFilters,
+              freshnessWindowHours,
+            }),
+          (result) => `Checked Dice — ${result.totalFound} ${result.totalFound === 1 ? "listing" : "listings"} found`,
+        )
+      : null,
     runSource(
       "himalayas",
       "Himalayas",
@@ -153,11 +158,12 @@ export async function runJobDiscoveryScan(input: {
       error,
       category: classifyScanErrorMessage(error),
     })) ?? [];
-  const diceErrors = dice.errors.map((error) => ({
-    company: "Dice",
-    error,
-    category: classifyScanErrorMessage(error),
-  }));
+  const diceErrors =
+    dice?.errors.map((error) => ({
+      company: "Dice",
+      error,
+      category: classifyScanErrorMessage(error),
+    })) ?? [];
   const himalayasErrors = himalayas.errors.map((error) => ({
     company: "Himalayas",
     error,
@@ -166,7 +172,7 @@ export async function runJobDiscoveryScan(input: {
   const allJobs = [
     ...careerOps.jobs.map((job) => ({ title: job.title, url: job.url, company: job.company })),
     ...(adzuna?.jobs ?? []),
-    ...dice.jobs,
+    ...(dice?.jobs ?? []),
     ...himalayas.jobs,
   ];
   const max = SCAN_RESULT_JOBS_PREVIEW_MAX;
@@ -179,19 +185,19 @@ export async function runJobDiscoveryScan(input: {
         : careerSummary.status === "completed_with_errors" ||
             adzuna?.status === "error" ||
             adzunaErrors.length > 0 ||
-            (dice.status === "error" && diceErrors.length > 0) ||
+            (dice?.status === "error" && diceErrors.length > 0) ||
             (himalayas.status === "error" && himalayasErrors.length > 0)
           ? "completed_with_errors"
           : "completed",
-    newJobsCount: careerSummary.newJobsCount + (adzuna?.imported ?? 0) + dice.imported + himalayas.imported,
-    totalJobsFound: careerSummary.totalJobsFound + (adzuna?.totalFound ?? 0) + dice.totalFound + himalayas.totalFound,
-    duplicateCount: careerSummary.duplicateCount + (adzuna?.duplicates ?? 0) + dice.duplicates + himalayas.duplicates,
+    newJobsCount: careerSummary.newJobsCount + (adzuna?.imported ?? 0) + (dice?.imported ?? 0) + himalayas.imported,
+    totalJobsFound: careerSummary.totalJobsFound + (adzuna?.totalFound ?? 0) + (dice?.totalFound ?? 0) + himalayas.totalFound,
+    duplicateCount: careerSummary.duplicateCount + (adzuna?.duplicates ?? 0) + (dice?.duplicates ?? 0) + himalayas.duplicates,
     errors: [...careerSummary.errors, ...adzunaErrors, ...diceErrors, ...himalayasErrors],
     jobs: allJobs.slice(0, max),
     jobsTotal: allJobs.length > max ? allJobs.length : undefined,
-    freshCount: (careerOps.freshCount ?? careerOps.newJobsCount) + (adzuna?.fresh ?? 0) + dice.fresh + himalayas.fresh,
-    unknownDateCount: (careerOps.unknownDateCount ?? 0) + (adzuna?.unknownDate ?? 0) + dice.unknownDate + himalayas.unknownDate,
-    staleFilteredCount: (careerOps.staleFilteredCount ?? 0) + (adzuna?.staleFiltered ?? 0) + dice.staleFiltered + himalayas.staleFiltered,
+    freshCount: (careerOps.freshCount ?? careerOps.newJobsCount) + (adzuna?.fresh ?? 0) + (dice?.fresh ?? 0) + himalayas.fresh,
+    unknownDateCount: (careerOps.unknownDateCount ?? 0) + (adzuna?.unknownDate ?? 0) + (dice?.unknownDate ?? 0) + himalayas.unknownDate,
+    staleFilteredCount: (careerOps.staleFilteredCount ?? 0) + (adzuna?.staleFiltered ?? 0) + (dice?.staleFiltered ?? 0) + himalayas.staleFiltered,
     preferenceFilteredCount: adzuna?.preferenceFiltered ?? 0,
   };
 }

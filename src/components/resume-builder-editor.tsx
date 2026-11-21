@@ -576,7 +576,7 @@ export function ResumeBuilderEditor({ resumeId, resumeName, version, isNew = fal
                               <label className={labelCls}>Location</label>
                               <input
                                 className={inputCls}
-                                placeholder="e.g. Remote / Nashville, TN"
+                                placeholder="e.g. Remote / Leeds, UK"
                                 value={entry.location ?? ""}
                                 onChange={(event) => {
                                   const experience = [...(section.experience ?? [])];

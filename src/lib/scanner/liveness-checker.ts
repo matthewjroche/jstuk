@@ -19,7 +19,7 @@ const CHALLENGE = /verify (?:you are|you're) human|checking your browser|access 
 const APPLY = /apply (?:now|for this (?:job|role|position))|submit (?:your |an )?application/i;
 // A listing here is never proof the employer is still hiring, only that the board still shows it.
 // Every board the scanner imports from belongs in this list.
-const BOARD_HOSTS = ["himalayas.app", "adzuna.com", "adzuna.co.uk", "adzuna.ca", "adzuna.com.au", "linkedin.com", "indeed.com", "glassdoor.com", "monster.com", "dice.com", "wellfound.com", "workatastartup.com", "remoterocketship.com", "jobgether.com", "jooble.org", "jobrapido.com", "lensa.com", "talent.com", "ziprecruiter.com", "weworkremotely.com", "remoteok.com", "remotive.com", "builtin.com", "otta.com"];
+const BOARD_HOSTS = ["himalayas.app", "adzuna.com", "adzuna.co.uk", "adzuna.ca", "adzuna.com.au", "linkedin.com", "indeed.com", "glassdoor.com", "monster.com", "dice.com", "glassdoor.co.uk", "monster.co.uk", "reed.co.uk", "totaljobs.com", "cv-library.co.uk", "findajob.dwp.gov.uk", "jobs.nhs.uk", "civilservicejobs.service.gov.uk", "jobs.ac.uk", "technojobs.co.uk", "wellfound.com", "workatastartup.com", "remoterocketship.com", "jobgether.com", "jooble.org", "jobrapido.com", "lensa.com", "talent.com", "ziprecruiter.com", "weworkremotely.com", "remoteok.com", "remotive.com", "builtin.com", "otta.com"];
 
 function hostIs(url: string, hosts: string[]) {
   try { const host = new URL(url).hostname.toLowerCase(); return hosts.some((h) => host === h || host.endsWith(`.${h}`)); } catch { return false; }

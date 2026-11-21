@@ -42,6 +42,7 @@ const emptySourceResult = {
 describe("runJobDiscoveryScan progress", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllEnvs();
     mocks.getAISettings.mockReturnValue({ adzunaAppId: "app-id", adzunaApiKey: "api-key" });
     mocks.getUserProfile.mockReturnValue({
       targetRoles: ["Product Designer"],
@@ -74,7 +75,25 @@ describe("runJobDiscoveryScan progress", () => {
     });
   });
 
+  it("leaves Dice out of the scan by default (US-only board in the UK fork)", async () => {
+    const updates: JobDiscoveryProgressUpdate[] = [];
+
+    await runJobDiscoveryScan({
+      trigger: "manual",
+      onProgress: (update) => updates.push(update),
+    });
+
+    expect(updates).toContainEqual({
+      sourceId: "dice",
+      sourceLabel: "Dice",
+      status: "skipped",
+      detail: "US-only board, switched off in this fork",
+    });
+    expect(mocks.runDiceScan).not.toHaveBeenCalled();
+  });
+
   it("reports the real state of all parallel scan lanes", async () => {
+    vi.stubEnv("JST_ENABLE_DICE", "1");
     const updates: JobDiscoveryProgressUpdate[] = [];
 
     await runJobDiscoveryScan({

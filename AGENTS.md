@@ -234,16 +234,16 @@ Supported boards:
 | LinkedIn | `linkedin` | `https://www.linkedin.com/jobs/search/` |
 | Wellfound | `wellfound` | `https://wellfound.com/jobs` |
 | Work at a Startup | `workatastartup` | `https://www.workatastartup.com/companies` |
-| Glassdoor | `glassdoor` | `https://www.glassdoor.com/Job/index.htm` |
-| Indeed | `indeed` | `https://www.indeed.com/jobs` |
-| Monster | `monster` | `https://www.monster.com/jobs/search?recency=3&sort=newest` (append `&q=<title>&where=<location>` for each search) |
+| Glassdoor | `glassdoor` | `https://www.glassdoor.co.uk/Job/index.htm` |
+| Indeed | `indeed` | `https://uk.indeed.com/jobs` |
+| Monster | `monster` | `https://www.monster.co.uk/jobs/search?recency=3&sort=newest` (append `&q=<title>&where=<location>` for each search) |
 
 For each title in `target_roles_json`, search with the title and the first entry
 of `preferred_locations_json`.
 
 **Monster search URL:** Construct the URL directly with the recency filter baked
 in — do **not** rely on the UI filter alone. Use:
-`https://www.monster.com/jobs/search?q=<URL-encoded title>&where=<URL-encoded location>&recency=3&sort=newest`
+`https://www.monster.co.uk/jobs/search?q=<URL-encoded title>&where=<URL-encoded location>&recency=3&sort=newest`
 This ensures freshness even when Monster's UI filter fails to apply.
 
 Apply visible filters matching preferences:

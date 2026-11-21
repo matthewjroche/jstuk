@@ -90,7 +90,7 @@ export type CompensationResearch = {
  * empty rather than quietly filled from model memory.
  */
 export async function researchMarketCompensation(job: Pick<JobRecord, "title" | "location">): Promise<CompensationResearch> {
-  const query = `${job.title} salary range ${job.location || "United States"} 2026`;
+  const query = `${job.title} salary range ${job.location || "United Kingdom"} 2026`;
   const braveKey = getAISettings().braveSearchApiKey;
 
   if (braveKey) {

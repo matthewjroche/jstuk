@@ -18,6 +18,8 @@ const NON_EMPLOYER_HOSTS = [
   "smartrecruiters.com", "jobvite.com", "icims.com", "bamboohr.com", "breezy.hr",
   "recruitee.com", "workable.com", "teamtailor.com", "personio.de", "rippling.com",
   "linkedin.com", "indeed.com", "glassdoor.com", "monster.com", "dice.com",
+  "glassdoor.co.uk", "monster.co.uk", "reed.co.uk", "totaljobs.com", "cv-library.co.uk",
+  "findajob.dwp.gov.uk", "jobs.nhs.uk", "civilservicejobs.service.gov.uk", "jobs.ac.uk", "technojobs.co.uk",
   "wellfound.com", "angel.co", "ziprecruiter.com", "himalayas.app", "adzuna.com",
   "workatastartup.com", "builtin.com", "otta.com", "welcometothejungle.com",
   "google.com", "notion.site", "airtable.com",

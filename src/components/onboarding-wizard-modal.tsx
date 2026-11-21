@@ -779,7 +779,7 @@ export function OnboardingWizardModal({
                           inputId="onboarding-remote-location-search"
                           label="Remote regions"
                           name="remoteLocations"
-                          placeholder="Start typing a country or region (for example United States, Canada, or Europe)"
+                          placeholder="Start typing a country or region (for example United Kingdom, Ireland, or Europe)"
                           suggestRegionGroups
                         />
                       )}

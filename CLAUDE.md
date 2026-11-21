@@ -209,9 +209,9 @@ Supported boards:
 | LinkedIn | `linkedin` | `https://www.linkedin.com/jobs/search/` |
 | Wellfound | `wellfound` | `https://wellfound.com/jobs` |
 | Work at a Startup | `workatastartup` | `https://www.workatastartup.com/companies` |
-| Glassdoor | `glassdoor` | `https://www.glassdoor.com/Job/index.htm` |
-| Indeed | `indeed` | `https://www.indeed.com/jobs` |
-| Monster | `monster` | `https://www.monster.com/jobs/search?recency=3&sort=newest` (append `&q=<title>&where=<location>` for each search) |
+| Glassdoor | `glassdoor` | `https://www.glassdoor.co.uk/Job/index.htm` |
+| Indeed | `indeed` | `https://uk.indeed.com/jobs` |
+| Monster | `monster` | `https://www.monster.co.uk/jobs/search?recency=3&sort=newest` (append `&q=<title>&where=<location>` for each search) |
 | Dice | `dice` | (MCP — no URL; call `search_jobs` tool directly, no browser needed) |
 
 ---
@@ -266,7 +266,7 @@ If `target_roles_json` is empty, ask the user to set their target roles in Job S
 Use Claude in Chrome to navigate the requested board:
 
 1. Open the board start URL from the table above.
-   - **Monster:** Construct the URL directly with the recency filter baked in — do **not** rely on the UI filter alone. Use: `https://www.monster.com/jobs/search?q=<URL-encoded title>&where=<URL-encoded location>&recency=3&sort=newest`. This ensures freshness even when Monster's UI filter fails to apply.
+   - **Monster:** Construct the URL directly with the recency filter baked in — do **not** rely on the UI filter alone. Use: `https://www.monster.co.uk/jobs/search?q=<URL-encoded title>&where=<URL-encoded location>&recency=3&sort=newest`. This ensures freshness even when Monster's UI filter fails to apply.
 2. For each title in `target_roles_json`, search with the title as keywords and the first location from `preferred_locations_json` as location.
 3. Apply visible filters that match saved preferences when the board exposes them:
    - **Date posted:** Past week, if available. For Monster specifically, the `recency=3` URL param (above) handles this — no need to also set the UI filter.

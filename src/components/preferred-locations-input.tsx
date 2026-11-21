@@ -29,8 +29,8 @@ export function PreferredLocationsInput({
   name = "preferredLocations",
   label = "Preferred locations",
   inputId = "preferred-location-search",
-  placeholder = "Start typing a city, state, or country (for example Nashville, Tennessee, or Canada)",
-  hint = "Choose exact city, state, or country values used by filtering.",
+  placeholder = "Start typing a city, state, or country (for example Harrogate, Leeds, or Scotland)",
+  hint = "Choose exact town, county, or country values used by filtering.",
   emptyLabel = "No preferred locations set.",
   suggestRegionGroups = false
 }: PreferredLocationsInputProps) {

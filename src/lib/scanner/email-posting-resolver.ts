@@ -76,7 +76,7 @@ export async function searchPostingCandidates(jobId: string): Promise<{
     q: `${toBraveQuery(query)} (jobs OR careers OR greenhouse OR lever OR ashby OR workday)`,
     count: "8",
     search_lang: "en",
-    country: "us",
+    country: "gb",
   });
   const res = await safeFetch(`${BRAVE_SEARCH_URL}?${params}`, {
     headers: {

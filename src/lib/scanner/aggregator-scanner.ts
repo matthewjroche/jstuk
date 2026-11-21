@@ -91,6 +91,31 @@ const ADZUNA_BACKOFF: BackoffConfig = {
  */
 const ADZUNA_MAX_CONSECUTIVE_FAILURES = 3;
 
+/** Adzuna country site this fork searches unless a scan says otherwise (UK). */
+export const ADZUNA_DEFAULT_COUNTRY = "gb";
+
+const CURRENCY_SYMBOL_BY_COUNTRY: Record<string, string> = {
+  gb: "£",
+  us: "$",
+  ca: "$",
+  au: "$",
+  nz: "$",
+  sg: "$",
+  de: "€",
+  fr: "€",
+  nl: "€",
+  at: "€",
+  be: "€",
+  it: "€",
+  es: "€",
+  pl: "zł",
+  ch: "CHF ",
+  in: "₹",
+  br: "R$",
+  za: "R",
+  mx: "$",
+};
+
 /**
  * Distinct search terms per scan.
  *
@@ -217,7 +242,7 @@ function adzunaStableUrl(redirectUrl: string): string {
  * its tracking query), so jobs saved before this change are recognised on the
  * next scan instead of arriving a second time.
  */
-export function adzunaResultToScanJob(job: AdzunaJob) {
+export function adzunaResultToScanJob(job: AdzunaJob, country: string = ADZUNA_DEFAULT_COUNTRY) {
   const listingUrl = adzunaListingUrl(job.redirect_url, String(job.id));
   return {
     id: randomUUID(),
@@ -230,15 +255,16 @@ export function adzunaResultToScanJob(job: AdzunaJob) {
     idKey: adzunaStableUrl(job.redirect_url),
     discoveredAt: new Date(job.created).toISOString(),
     location: job.location.display_name,
-    salaryNotes: formatSalary(job.salary_min, job.salary_max),
+    salaryNotes: formatSalary(job.salary_min, job.salary_max, country),
   };
 }
 
-function formatSalary(min?: number, max?: number): string {
+export function formatSalary(min?: number, max?: number, country: string = ADZUNA_DEFAULT_COUNTRY): string {
   if (!min && !max) return "";
-  if (min && max) return `$${Math.round(min / 1000)}k–$${Math.round(max / 1000)}k/yr`;
-  if (min) return `$${Math.round(min / 1000)}k+/yr`;
-  return `up to $${Math.round(max! / 1000)}k/yr`;
+  const symbol = CURRENCY_SYMBOL_BY_COUNTRY[country.toLowerCase()] ?? "";
+  if (min && max) return `${symbol}${Math.round(min / 1000)}k–${symbol}${Math.round(max / 1000)}k/yr`;
+  if (min) return `${symbol}${Math.round(min / 1000)}k+/yr`;
+  return `up to ${symbol}${Math.round(max! / 1000)}k/yr`;
 }
 
 /**
@@ -297,8 +323,30 @@ export function buildAdzunaSearchTerms(
  */
 export function buildAdzunaLanes(locations: string[], isRemoteOnly: boolean): string[] {
   if (isRemoteOnly) return [""];
-  const commute = locations.map((location) => location.trim()).find(Boolean);
+  const commute = locations.map(adzunaWhereFor).find(Boolean);
   return commute ? [commute, ""] : [""];
+}
+
+/** Country, nation and island names that mean "everywhere", not a place to centre a search on. */
+const COUNTRY_LEVEL_WHERE = new Set([
+  "united kingdom", "uk", "u.k.", "great britain", "gb", "britain",
+  "england", "scotland", "wales", "northern ireland",
+  "united states", "usa", "us", "canada", "australia", "germany", "france",
+]);
+
+/**
+ * The part of a saved location Adzuna can geocode.
+ *
+ * Saved locations are full address paths — "Harrogate, North Yorkshire, England,
+ * United Kingdom" — because that is what the location picker stores. Sent whole,
+ * Adzuna's `where` resolves them badly or not at all, and a small town returned
+ * nothing. The first segment (the town) is what it understands; a bare
+ * country-level entry is dropped so that lane becomes the nationwide search.
+ */
+export function adzunaWhereFor(location: string): string {
+  const town = location.split(",")[0]?.trim() ?? "";
+  if (!town || COUNTRY_LEVEL_WHERE.has(town.toLowerCase())) return "";
+  return town;
 }
 
 /**
@@ -353,7 +401,7 @@ export async function runAggregatorScan(
     return { status: "error", imported: 0, duplicates: 0, fresh: 0, unknownDate: 0, staleFiltered: 0, preferenceFiltered: 0, totalFound: 0, errors: ["Nothing to search for — add title keywords under Settings → Preferences → Title filters, or target roles in Profile"], jobs: [] };
   }
 
-  const country = opts.country ?? "us";
+  const country = opts.country ?? ADZUNA_DEFAULT_COUNTRY;
   const freshnessWindowHours = opts.freshnessWindowHours ?? 72;
   const scanTimestamp = new Date().toISOString();
   const isRemoteOnly = opts.remotePreference === "remote-only";
@@ -374,7 +422,7 @@ export async function runAggregatorScan(
           const adzunaId = String(job.id);
           if (seen.has(adzunaId)) continue;
           seen.add(adzunaId);
-          jobs.push(adzunaResultToScanJob(job));
+          jobs.push(adzunaResultToScanJob(job, country));
         }
         onProgress?.(`Found ${results.length} jobs for "${term}" ${laneLabel}`);
         consecutiveFailures = 0;

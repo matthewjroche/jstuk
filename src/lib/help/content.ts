@@ -119,7 +119,7 @@ export const helpPages: HelpPage[] = [
           },
           {
             title: "Run your first scan",
-            body: "Go back to the Dashboard and press Scan for new jobs. The app checks around fifty company job pages, plus Dice and the Himalayas remote job board, plus Adzuna if you set it up. A progress window shows what it is working through. When it finishes, the new jobs are waiting under Jobs.",
+            body: "Go back to the Dashboard and press Scan for new jobs. The app checks around fifty company job pages, plus the Himalayas remote job board, plus Adzuna (its UK site) if you set it up. A progress window shows what it is working through. When it finishes, the new jobs are waiting under Jobs.",
           },
         ],
         callout: {
@@ -641,7 +641,7 @@ export const helpPages: HelpPage[] = [
           },
           {
             title: "Start the scan",
-            body: "Press Scan for new jobs on the Dashboard. The app works through the company job pages you have switched on, plus Dice and Himalayas, plus Adzuna if you set it up. A window shows each source moving from waiting to scanning to complete, so you can see what is slow and what failed.",
+            body: "Press Scan for new jobs on the Dashboard. The app works through the company job pages you have switched on, plus Himalayas, plus Adzuna (its UK site) if you set it up. Dice is a US board, so it is skipped in this version. A window shows each source moving from waiting to scanning to complete, so you can see what is slow and what failed.",
           },
           {
             title: "Read the scan summary",
@@ -1380,7 +1380,7 @@ export const helpPages: HelpPage[] = [
           "If your first service runs out of credits, the app moves on to the next one in your list. A bar at the top of the page tells you when that is happening, so you are never surprised about which service received your text.",
           "If a document is genuinely sensitive, do not run a cloud AI feature on it. Use Ollama for that one, or handle it yourself.",
           "If you think anyone else has seen your key, delete it on the service\'s website and make a new one.",
-          "To search job boards, a scan sends the words it is searching for: your include keywords or target roles to Himalayas, your target roles and on-site locations to Dice, and, if you set it up, your include keywords and on-site location to Adzuna. Nothing else from your profile, and nothing from your resume, is sent.",
+          "To search job boards, a scan sends the words it is searching for: your include keywords or target roles to Himalayas, and, if you set it up, your include keywords and the town from your first on-site location to Adzuna. Dice is switched off in this version, so nothing goes to it. Nothing else from your profile, and nothing from your resume, is sent.",
           "When a scan finds a new Himalayas job, or you press Find posting, the app asks Greenhouse, Lever, and Ashby for that company's public list of jobs. The company's name is part of the web address it asks for. Nothing about you, your resume, or your profile is sent.",
           "Once a day the app asks GitHub whether a newer version of Job Search Terminal exists. It sends one code identifying a version that is already published on GitHub — nothing about you, your jobs, or your resumes, and nothing you have written yourself.",
           "When you type at least two letters into a location box under Preferences, the app looks the place up on OpenStreetMap so it can suggest matches. Only the letters you typed are sent.",

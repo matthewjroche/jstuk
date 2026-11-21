@@ -26,7 +26,7 @@ vi.mock("@/lib/scanner/browser-board-importer", () => ({
   importBrowserBoardJobs: mocks.importBrowserBoardJobs,
 }));
 
-import { buildAdzunaLanes, buildAdzunaSearchTerms, runAggregatorScan } from "@/lib/scanner/aggregator-scanner";
+import { adzunaWhereFor, buildAdzunaLanes, buildAdzunaSearchTerms, formatSalary, runAggregatorScan } from "@/lib/scanner/aggregator-scanner";
 
 const CREDENTIALS = { adzunaAppId: "app-id", adzunaApiKey: "api-key" };
 
@@ -284,6 +284,44 @@ describe("Adzuna search lanes", () => {
     expect(buildAdzunaLanes(["Berlin"], true)).toEqual([""]);
     expect(buildAdzunaLanes([], false)).toEqual([""]);
     expect(buildAdzunaLanes(["  "], false)).toEqual([""]);
+  });
+
+  it("searches Adzuna by town, not by the full saved address", () => {
+    // The location picker stores the whole path; Adzuna's `where` only copes
+    // with the town, so a small town used to return nothing.
+    expect(buildAdzunaLanes(["Harrogate, North Yorkshire, England, United Kingdom"], false)).toEqual([
+      "Harrogate",
+      "",
+    ]);
+    expect(adzunaWhereFor("Hebden Bridge, West Yorkshire, England, United Kingdom")).toBe("Hebden Bridge");
+  });
+
+  it("treats a country-level location as the nationwide search", () => {
+    expect(adzunaWhereFor("United Kingdom")).toBe("");
+    expect(adzunaWhereFor("Scotland")).toBe("");
+    expect(buildAdzunaLanes(["United Kingdom"], false)).toEqual([""]);
+    // A country entry does not hide a later town.
+    expect(buildAdzunaLanes(["United Kingdom", "Leeds, West Yorkshire, England, United Kingdom"], false)).toEqual([
+      "Leeds",
+      "",
+    ]);
+  });
+
+  it("searches the UK site by default", async () => {
+    mocks.safeFetch.mockResolvedValue(ok([]));
+    await settle(runAggregatorScan(scanOpts({ locations: ["Harrogate, North Yorkshire, England, United Kingdom"] })));
+    const urls = mocks.safeFetch.mock.calls.map((call) => String(call[0]));
+    expect(urls.every((url) => url.includes("/jobs/gb/search/"))).toBe(true);
+    const local = urls.find((url) => url.includes("where=Harrogate"));
+    expect(local).toBeDefined();
+    expect(urls.some((url) => !url.includes("where="))).toBe(true);
+  });
+
+  it("formats salaries in the currency of the searched country", () => {
+    expect(formatSalary(45000, 60000)).toBe("£45k–£60k/yr");
+    expect(formatSalary(45000, undefined, "gb")).toBe("£45k+/yr");
+    expect(formatSalary(undefined, 60000, "us")).toBe("up to $60k/yr");
+    expect(formatSalary(undefined, undefined)).toBe("");
   });
 });
 

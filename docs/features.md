@@ -3197,6 +3197,11 @@ An optional feature for users with Claude Desktop or Codex Chrome. An agent disc
 
 ## Dice MCP Scanner (In-App, No Credentials)
 
+> **UK fork:** Dice is a US board and is skipped on every scan unless the
+> environment variable `JST_ENABLE_DICE=1` is set. Adzuna searches its UK site
+> (`gb`) by town, and the location picker offers small UK towns. See
+> [uk-fork.md](uk-fork.md).
+
 Dice is a tech-focused job board. JST integrates with Dice via Dice's free, public MCP server (`https://mcp.dice.com/mcp`) — no API keys, no browser extension, and no login required.
 
 **How it works:**
